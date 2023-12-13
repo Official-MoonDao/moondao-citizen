@@ -4,7 +4,7 @@
 
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -17,7 +17,7 @@ contract MoonDAOCitizen is ERC1155, Ownable {
 
     bool internal locked; //re-entry lock
 
-    constructor(address _vMooneyAddress, uint256 _minVotingPower, string memory _uri) ERC1155("MoonDAO Citizen") {
+    constructor(address _vMooneyAddress, uint256 _minVotingPower, string memory _uri) Ownable(msg.sender) ERC1155("MoonDAO Citizen") {
         setURI(_uri);
         setVMooneyAddress(_vMooneyAddress);
         setMinVotingPower(_minVotingPower);
@@ -40,12 +40,13 @@ contract MoonDAOCitizen is ERC1155, Ownable {
         vMooneyAddress = _vMooneyAddress;
     }
 
-    function setMinVotingPower(address _minVotingPower) public onlyOwner {
+    function setMinVotingPower(uint256 _minVotingPower) public onlyOwner {
         minVotingPower = _minVotingPower;
     }
 
     function mint() public reEntrancyGuard {
         (bool success, bytes memory result) = vMooneyAddress.call(abi.encodeWithSignature("balanceOf(address)", msg.sender));
+        require(success, "VMooney balanceOf call failed");
         require(abi.decode(result, (uint256)) >= minVotingPower, "Wallet doesn't have enough vMooney");
         require(this.balanceOf(msg.sender,0) < 1, "Wallet already owns an NFT");
         _mint(msg.sender, 0, 1, "");
