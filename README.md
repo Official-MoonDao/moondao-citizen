@@ -1,3 +1,13 @@
+# MoonDAO Citizen Contract
+
+This is the NFT contract for MoonDAO citizenship.
+
+### Minting
+Minting requires that users have more than the minimum requried voting power. 
+
+### Transfers
+MoonDAO Citizenship cannot be transfered.
+
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
