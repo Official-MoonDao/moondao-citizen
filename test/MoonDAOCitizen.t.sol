@@ -28,7 +28,7 @@ contract MoonDAOCitizenTest is Test {
         mdc.setVMooneyAddress(address(0));
     }
 
-    function testMinting() public {
+    function testMintingAndTransfer() public {
         address A = address(0x0); //no mooney
         address B = address(0x0724d0eb7b6d32AEDE6F9e492a5B1436b537262b); //min amount of mooney
 
@@ -49,6 +49,11 @@ contract MoonDAOCitizenTest is Test {
     //Try minting again w/ minimum mooney amount
         vm.expectRevert();
         mdc.mint();
-        vm.stopPrank();
+    
+    //Try transfering
+        vm.expectRevert();
+        mdc.safeTransferFrom(B, A, 0, 1, '');
+        uint256 nftBalanceA = mdc.balanceOf(A, 0);
+        assert(nftBalanceA == 0);
     }
 }
